@@ -3,25 +3,73 @@ const TRAINERS_URL = `${BASE_URL}/trainers`
 const POKEMONS_URL = `${BASE_URL}/pokemons`
 const mainArea = document.querySelector("main")
 
-fetch(TRAINERS_URL)
+fetch(POKEMONS_URL)
 .then(res => res.json())
-.then(res => showTrainers(res))
+.then(pokemonArray => { 
+    fetch(TRAINERS_URL)
+.then(res => res.json())
+.then(res => {
+    showTrainers(res, pokemonArray)
+})
+})
 
-function showTrainers(trainersArray) {
-    trainersArray.forEach(trainer => showTrainer(trainer))
+function showPokemons(pokemonArray) {
+    pokemonArray.forEach
+}
+
+
+function showTrainers(trainersArray, pokemonArray) {
+    trainersArray.forEach(trainer => showTrainer(trainer, pokemonArray))
 };
 
-function showTrainer(trainerObj) {
+function showTrainer(trainerObj, pokemonArray) {
     const trainerCard = document.createElement("div")
+    trainerCard.classList.add("card")
+    trainerCard.dataset.id = trainerObj.id
 
     trainerCard.innerHTML= `
-    <div class="card" data-id="${trainerObj.id}"><p>${trainerObj.name}</p>
-        <button data-trainer-id="${trainerObj.id}">Add Pokemon</button>
-    </div>`
+    <p>${trainerObj.name}</p>
+    <ul id="poke-list"></ul>
+        <button class = "add-button" data-trainer-id="${trainerObj.id}">Add Pokemon</button>`
+    // mainArea.append(trainerCard)
 
+    let matching = pokemonArray.filter(poke => poke.trainer_id == trainerObj.id)
+
+
+    const addButton = trainerCard.querySelector(".add-button")
+        addButton.addEventListener("click", event => {
+            const pokemon = pokemonArray[Math.floor(Math.random() * 40 ) +1]
+            const newItem = document.createElement("li")
+            newItem.innerHTML = 
+            `${pokemon.nickname} (${pokemon.species})`
+
+            let releaseButton = document.createElement("button")
+            releaseButton.classList.add("release")
+            releaseButton.innerText = "Release"
+            releaseButton.dataset.id = pokemon.id
+            newItem.append(releaseButton)
+            releaseButton.addEventListener("click", event => event.target.parentNode.remove())
+            ul.append(newItem)
+    })
+
+    const ul = document.createElement("ul")
+
+    matching.forEach(poke => {
+        const newItem = document.createElement("li")
+        newItem.innerHTML = 
+        `${poke.nickname} (${poke.species})`
+
+            let releaseButton = document.createElement("button")
+            releaseButton.classList.add("release")
+            releaseButton.innerText = "Release"
+            releaseButton.dataset.id = poke.id
+            newItem.append(releaseButton)
+            releaseButton.addEventListener("click", event => event.target.parentNode.remove())
+        ul.append(newItem)
+    })
+
+    trainerCard.append(ul)
     mainArea.append(trainerCard)
-
-    
 }
  
 function showPokemon(trainerObj) {
@@ -29,3 +77,8 @@ function showPokemon(trainerObj) {
     .then(res => res.json())
     .then(showPokeman)
 }
+
+
+
+
+ 
